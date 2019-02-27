@@ -1,0 +1,49 @@
+Template 'aspnetwincontainer.json' is original.
+Template 'aspnetwincontainer.yaml' is working.
+'aspnetwincontainer-paras.json' is stack parameter file.
+
+
+[
+    {
+        "ParameterKey": "KeyName",
+        "ParameterValue": "sandbox1"
+    },
+    {
+        "ParameterKey": "SubnetID",
+        "ParameterValue": "subnet-0cadce43eca585da1,subnet-0d3beca89677f17cd,subnet-0b95e01c5c531c126"
+    },
+    {
+        "ParameterKey": "AppName",
+        "ParameterValue": "windows-web-sites"
+    },
+    {
+        "ParameterKey": "ECSImageName",
+        "ParameterValue": "535105329651.dkr.ecr.us-east-1.amazonaws.com/it-ops/windows-web-sites/windows-base:latest"
+    },
+    {
+        "ParameterKey": "DesiredCapacity",
+        "ParameterValue": "3"
+    },
+    {
+        "ParameterKey": "MaxSize",
+        "ParameterValue": "6"
+    },
+    {
+        "ParameterKey": "InstanceType",
+        "ParameterValue": "t2.medium"
+    },
+    {
+        "ParameterKey": "VpcId",
+        "ParameterValue": "vpc-024d08bbeb9f388de"
+    }
+]
+
+
+aws cloudformation create-stack --stack-name ecs-win-aspnet --template-body file://aspnetwincontainer.yaml --parameters file://aspnetwincontainer-params.json --capabilities CAPABILITY_IAM --disable-rollback
+
+
+ec2-18-232-152-187.compute-1.amazonaws.com
+Administrator
+Vb9rgl*R$w46.r7F5$cPy88i.-69g!YC
+
+

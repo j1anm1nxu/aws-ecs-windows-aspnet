@@ -1,0 +1,34 @@
+[
+    {
+        "ParameterKey": "KeyName",
+        "ParameterValue": "sandbox1"
+    },
+    {
+        "ParameterKey": "SubnetID",
+        "ParameterValue": "subnet-0cfd4511f0f0e1d17,subnet-0b9433064d4ebdc7a,subnet-050ec5385b2faf383"
+    },
+    {
+        "ParameterKey": "AppName",
+        "ParameterValue": "windows-web-sites"
+    },
+    {
+        "ParameterKey": "ECSImageName",
+        "ParameterValue": "535105329651.dkr.ecr.us-east-1.amazonaws.com/it-ops/windows-web-sites/windows-base:latest"
+    },
+    {
+        "ParameterKey": "DesiredCapacity",
+        "ParameterValue": "3"
+    },
+    {
+        "ParameterKey": "MaxSize",
+        "ParameterValue": "6"
+    },
+    {
+        "ParameterKey": "InstanceType",
+        "ParameterValue": "t2.medium"
+    },
+    {
+        "ParameterKey": "VpcId",
+        "ParameterValue": "vpc-024d08bbeb9f388de"
+    }
+]
