@@ -134,10 +134,10 @@ Resources:
     Properties:
       ContainerDefinitions:
         - Name: !Ref 'AppName'
-          Cpu: '200'
+          Cpu: '1024'
           Essential: 'true'
           Image: !Ref 'ECSImageName'
-          Memory: '2048'
+          Memory: '1024'
           LogConfiguration:
             LogDriver: awslogs
             Options:
@@ -248,10 +248,7 @@ Resources:
                   - c:\cfn\cfn-hup.conf
                   - c:\cfn\hooks.d\cfn-auto-reloader.conf
     Properties:
-      ImageId: !FindInMap
-        - AWSRegionToAMI
-        - !Ref 'AWS::Region'
-        - AMIID
+      ImageId: ami-0ee57045e039ace77
       SecurityGroups:
         - !Ref 'EcsSecurityGroup'
       InstanceType: !Ref 'InstanceType'
