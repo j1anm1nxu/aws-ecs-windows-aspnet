@@ -5,11 +5,11 @@
     },
     {
         "ParameterKey": "SubnetID",
-        "ParameterValue": "subnet-0cfd4511f0f0e1d17,subnet-0b9433064d4ebdc7a,subnet-050ec5385b2faf383"
+        "ParameterValue": "subnet-0b95e01c5c531c126,subnet-0cadce43eca585da1,subnet-0d3beca89677f17cd"
     },
     {
         "ParameterKey": "AppName",
-        "ParameterValue": "windows-web-sites"
+        "ParameterValue": "ecs-win-aspnet"
     },
     {
         "ParameterKey": "ECSImageName",
@@ -22,6 +22,10 @@
     {
         "ParameterKey": "MaxSize",
         "ParameterValue": "6"
+    },
+    {
+        "ParameterKey": "MinSize",
+        "ParameterValue": "3"
     },
     {
         "ParameterKey": "InstanceType",

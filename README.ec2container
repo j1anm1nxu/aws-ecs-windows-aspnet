@@ -1,3 +1,27 @@
+aws cloudformation create-stack --stack-name apc-cfn-ecs-win-2019-aspnet --template-body file://apc-cfn-ecs-win-2019-aspnet.yaml --parameters file://aspnetwincontainer-params.json --capabilities CAPABILITY_IAM --disable-rollback
+
+r!=fOy%P.yd*pm9sTBIBgsa&CLGB?sPf
+
+
+
+
+
+
+
+
+# NOTE:
+(1) ECS Cluster for EC2 Launch Type requires AWS curated Windows AMI
+Windows_Server-2016-English-Full-ECS_Optimized-2018.10.23 (ami-01b701d1a348a0d00)
+
+(2) Windows Server 2019
+Windows_Server-2019-English-Full-ContainersLatest-2019.02.13 (ami-0aeaed2faa756912c)
+
+(3) ECS host cannot be older than the platform on which docker image is built
+
+(4) Subnet shall be public
+
+
+
 Template 'aspnetwincontainer.json' is original.
 Template 'aspnetwincontainer.yaml' is working.
 'aspnetwincontainer-paras.json' is stack parameter file.
@@ -40,10 +64,5 @@ Template 'aspnetwincontainer.yaml' is working.
 
 
 aws cloudformation create-stack --stack-name ecs-win-aspnet --template-body file://aspnetwincontainer.yaml --parameters file://aspnetwincontainer-params.json --capabilities CAPABILITY_IAM --disable-rollback
-
-
-ec2-18-232-152-187.compute-1.amazonaws.com
-Administrator
-Vb9rgl*R$w46.r7F5$cPy88i.-69g!YC
 
 

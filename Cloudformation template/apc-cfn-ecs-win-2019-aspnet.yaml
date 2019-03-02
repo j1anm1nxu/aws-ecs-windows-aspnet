@@ -23,12 +23,16 @@ Parameters:
     Description: Number of instances to launch in your ECS cluster.
   MaxSize:
     Type: Number
-    Default: '4'
+    Default: '6'
     Description: Maximum number of instances that can be launched in your ECS cluster.
+  MinSize:
+    Type: Number
+    Default: '3'
+    Description: Minimun number of instances that can be launched in your ECS cluster.
   InstanceType:
     Description: EC2 instance type
     Type: String
-    Default: t2.micro
+    Default: t2.medium
     AllowedValues:
       - t2.micro
       - t2.small
@@ -146,10 +150,10 @@ Resources:
               awslogs-stream-prefix: !Ref 'AppName'
           PortMappings:
             - ContainerPort: 80
-  ECSALB:
+  ECSWINALB:
     Type: AWS::ElasticLoadBalancingV2::LoadBalancer
     Properties:
-      Name: ECSALB
+      Name: !Ref 'AppName'
       Scheme: internet-facing
       LoadBalancerAttributes:
         - Key: idle_timeout.timeout_seconds
@@ -157,39 +161,39 @@ Resources:
       Subnets: !Ref 'SubnetID'
       SecurityGroups:
         - !Ref 'EcsSecurityGroup'
-  ALBListener:
+  ECSWINALBListener:
     Type: AWS::ElasticLoadBalancingV2::Listener
     DependsOn: ECSServiceRole
     Properties:
       DefaultActions:
         - Type: forward
-          TargetGroupArn: !Ref 'ECSTargetGroup'
-      LoadBalancerArn: !Ref 'ECSALB'
+          TargetGroupArn: !Ref 'ECSWINTargetGroup'
+      LoadBalancerArn: !Ref 'ECSWINALB'
       Port: '80'
       Protocol: HTTP
-  ECSALBListenerRule:
+  ECSWINALBListenerRule:
     Type: AWS::ElasticLoadBalancingV2::ListenerRule
-    DependsOn: ALBListener
+    DependsOn: ECSWINALBListener
     Properties:
       Actions:
         - Type: forward
-          TargetGroupArn: !Ref 'ECSTargetGroup'
+          TargetGroupArn: !Ref 'ECSWINTargetGroup'
       Conditions:
         - Field: path-pattern
           Values:
             - /
-      ListenerArn: !Ref 'ALBListener'
+      ListenerArn: !Ref 'ECSWINALBListener'
       Priority: 1
-  ECSTargetGroup:
+  ECSWINTargetGroup:
     Type: AWS::ElasticLoadBalancingV2::TargetGroup
-    DependsOn: ECSALB
+    DependsOn: ECSWINALB
     Properties:
       HealthCheckIntervalSeconds: 300
       HealthCheckPath: /
       HealthCheckProtocol: HTTP
       HealthCheckTimeoutSeconds: 5
       HealthyThresholdCount: 2
-      Name: ECSTargetGroup
+      Name: !Ref 'AppName'
       Port: 80
       Protocol: HTTP
       UnhealthyThresholdCount: 2
@@ -199,7 +203,7 @@ Resources:
     Properties:
       VPCZoneIdentifier: !Ref 'SubnetID'
       LaunchConfigurationName: !Ref 'ContainerInstances'
-      MinSize: '3'
+      MinSize: !Ref 'MinSize'
       MaxSize: !Ref 'MaxSize'
       DesiredCapacity: !Ref 'DesiredCapacity'
     CreationPolicy:
@@ -328,14 +332,14 @@ Resources:
             - <persist>true</persist>
   service:
     Type: AWS::ECS::Service
-    DependsOn: ALBListener
+    DependsOn: ECSWINALBListener
     Properties:
       Cluster: !Ref 'ECSCluster'
       DesiredCount: '3'
       LoadBalancers:
         - ContainerName: !Ref 'AppName'
           ContainerPort: '80'
-          TargetGroupArn: !Ref 'ECSTargetGroup'
+          TargetGroupArn: !Ref 'ECSWINTargetGroup'
       Role: !Ref 'ECSServiceRole'
       TaskDefinition: !Ref 'taskdefinition'
   ECSServiceRole:
@@ -368,8 +372,8 @@ Resources:
     Type: AWS::ApplicationAutoScaling::ScalableTarget
     DependsOn: service
     Properties:
-      MaxCapacity: 4
-      MinCapacity: 3
+      MaxCapacity: !Ref 'MaxSize'
+      MinCapacity: !Ref 'MinSize'
       ResourceId: !Join
         - ''
         - - service/
@@ -462,10 +466,10 @@ Outputs:
     Value: !Ref 'service'
   ecscluster:
     Value: !Ref 'ECSCluster'
-  ECSALB:
+  ECSWINALB:
     Description: Your ALB DNS URL
     Value: !Join
       - ''
-      - - !GetAtt 'ECSALB.DNSName'
+      - - !GetAtt 'ECSWINALB.DNSName'
   taskdef:
     Value: !Ref 'taskdefinition'
