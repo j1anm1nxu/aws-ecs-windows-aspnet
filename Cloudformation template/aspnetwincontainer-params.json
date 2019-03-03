@@ -13,7 +13,15 @@
     },
     {
         "ParameterKey": "ECSImageName",
-        "ParameterValue": "535105329651.dkr.ecr.us-east-1.amazonaws.com/it-ops/windows-web-sites/windows-base:latest"
+        "ParameterValue": "535105329651.dkr.ecr.us-east-1.amazonaws.com/systane-co-ee-v1"
+    },
+    {
+        "ParameterKey": "ContainerCPU",
+        "ParameterValue": "512"
+    },
+    {
+        "ParameterKey": "ContainerMemory",
+        "ParameterValue": "1024"
     },
     {
         "ParameterKey": "DesiredCapacity",
@@ -29,7 +37,7 @@
     },
     {
         "ParameterKey": "InstanceType",
-        "ParameterValue": "t2.small"
+        "ParameterValue": "t2.medium"
     },
     {
         "ParameterKey": "VpcId",

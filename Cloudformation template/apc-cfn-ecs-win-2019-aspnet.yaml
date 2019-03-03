@@ -17,6 +17,14 @@ Parameters:
   ECSImageName:
     Type: String
     Description: Select the image uploaded in AWS ECR.
+  ContainerCPU:
+    Type: String
+    Description: CPU.
+    Default: '512'
+  ContainerMemory:
+    Type: String
+    Description: Memory.
+    Default: '1024'
   DesiredCapacity:
     Type: Number
     Default: '3'
@@ -138,10 +146,10 @@ Resources:
     Properties:
       ContainerDefinitions:
         - Name: !Ref 'AppName'
-          Cpu: '1024'
+          Cpu: !Ref 'ContainerCPU'
           Essential: 'true'
           Image: !Ref 'ECSImageName'
-          Memory: '1024'
+          Memory: !Ref 'ContainerMemory'
           LogConfiguration:
             LogDriver: awslogs
             Options:

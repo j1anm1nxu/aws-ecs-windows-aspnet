@@ -1,9 +1,5 @@
 aws cloudformation create-stack --stack-name apc-cfn-ecs-win-2019-aspnet --template-body file://apc-cfn-ecs-win-2019-aspnet.yaml --parameters file://aspnetwincontainer-params.json --capabilities CAPABILITY_IAM --disable-rollback
 
-{
-    "StackId": "arn:aws:cloudformation:us-east-1:535105329651:stack/apc-cfn-ecs-win-2019-aspnet/b12f6940-3d16-11e9-98cc-0eb85d5eff94"
-}
-
 
 
 
@@ -26,40 +22,6 @@ Template 'aspnetwincontainer.json' is original.
 Template 'aspnetwincontainer.yaml' is working.
 'aspnetwincontainer-paras.json' is stack parameter file.
 
-[
-    {
-        "ParameterKey": "KeyName",
-        "ParameterValue": "sandbox1"
-    },
-    {
-        "ParameterKey": "SubnetID",
-        "ParameterValue": "subnet-0cadce43eca585da1,subnet-0d3beca89677f17cd,subnet-0b95e01c5c531c126"
-    },
-    {
-        "ParameterKey": "AppName",
-        "ParameterValue": "windows-web-sites"
-    },
-    {
-        "ParameterKey": "ECSImageName",
-        "ParameterValue": "535105329651.dkr.ecr.us-east-1.amazonaws.com/it-ops/windows-web-sites/windows-base:latest"
-    },
-    {
-        "ParameterKey": "DesiredCapacity",
-        "ParameterValue": "3"
-    },
-    {
-        "ParameterKey": "MaxSize",
-        "ParameterValue": "6"
-    },
-    {
-        "ParameterKey": "InstanceType",
-        "ParameterValue": "t2.medium"
-    },
-    {
-        "ParameterKey": "VpcId",
-        "ParameterValue": "vpc-024d08bbeb9f388de"
-    }
-]
 
 aws cloudformation create-stack --stack-name ecs-win-aspnet --template-body file://aspnetwincontainer.yaml --parameters file://aspnetwincontainer-params.json --capabilities CAPABILITY_IAM --disable-rollback
 
@@ -68,8 +30,104 @@ aws cloudformation create-stack --stack-name ecs-win-aspnet --template-body file
 
 (7) 't2.small' works fine for small self-contained wet site
 
+(8) systane learning no - NOT WORKING
+535105329651.dkr.ecr.us-east-1.amazonaws.com/it-ops/windows-web-sites/systane-learning-no:latest
+www.systane-learning.no-v1
+ec2-54-87-8-248.compute-1.amazonaws.com
+54.87.8.248
+Windows Server 2016 Base
+# Home page login username / password
+Alliance apotek Tolvsrød
+SystaneNO
+# Second input
+Alliance apotek Tolvsrød
+# Enter to complete input fields
+
+
+(9) Dockerfile
+# escape=`
+
+FROM microsoft/dotnet-framework:4.7.2-runtime-windowsservercore-ltsc2019
+
+SHELL ["powershell", "-Command", "$ErrorActionPreference = 'Stop'; $ProgressPreference = 'SilentlyContinue';"]
+
+RUN Add-WindowsFeature Web-Server; `
+    Add-WindowsFeature NET-Framework-45-ASPNET; `
+    Add-WindowsFeature Web-Asp-Net45; `
+    Remove-Item -Recurse C:\inetpub\wwwroot\*; `
+    Invoke-WebRequest -Uri https://dotnetbinaries.blob.core.windows.net/servicemonitor/2.0.1.6/ServiceMonitor.exe -OutFile C:\ServiceMonitor.exe
+
+#download Roslyn nupkg and ngen the compiler binaries
+RUN Invoke-WebRequest https://api.nuget.org/packages/microsoft.net.compilers.2.9.0.nupkg -OutFile c:\microsoft.net.compilers.2.9.0.zip ; `	
+    Expand-Archive -Path c:\microsoft.net.compilers.2.9.0.zip -DestinationPath c:\RoslynCompilers ; `
+    Remove-Item c:\microsoft.net.compilers.2.9.0.zip -Force ; `
+    &C:\Windows\Microsoft.NET\Framework64\v4.0.30319\ngen.exe install c:\RoslynCompilers\tools\csc.exe /ExeConfig:c:\RoslynCompilers\tools\csc.exe | `
+    &C:\Windows\Microsoft.NET\Framework64\v4.0.30319\ngen.exe install c:\RoslynCompilers\tools\vbc.exe /ExeConfig:c:\RoslynCompilers\tools\vbc.exe  | `
+    &C:\Windows\Microsoft.NET\Framework64\v4.0.30319\ngen.exe install c:\RoslynCompilers\tools\VBCSCompiler.exe /ExeConfig:c:\RoslynCompilers\tools\VBCSCompiler.exe | `
+    &C:\Windows\Microsoft.NET\Framework\v4.0.30319\ngen.exe install c:\RoslynCompilers\tools\csc.exe /ExeConfig:c:\RoslynCompilers\tools\csc.exe | `
+    &C:\Windows\Microsoft.NET\Framework\v4.0.30319\ngen.exe install c:\RoslynCompilers\tools\vbc.exe /ExeConfig:c:\RoslynCompilers\tools\vbc.exe | `
+    &C:\Windows\Microsoft.NET\Framework\v4.0.30319\ngen.exe install c:\RoslynCompilers\tools\VBCSCompiler.exe  /ExeConfig:c:\RoslynCompilers\tools\VBCSCompiler.exe ;
+
+ENV ROSLYN_COMPILER_LOCATION c:\\RoslynCompilers\\tools
+
+WORKDIR /inetpub/wwwroot
+COPY . .
+
+EXPOSE 80
+
+ENTRYPOINT ["C:\\ServiceMonitor.exe", "w3svc"]
 
 
 
+PS C:\Users\jimxu7\projects\www.systane-learning.no-v1> history
+
+  Id CommandLine
+  -- -----------
+   1 cd ~/
+   4 cd www.systane-learning.no-v1
+  17 cp C:\Users\jimxu7\projects\aspnet-docker\4.7.2-windowsservercore-ltsc2019\runtime\Dockerfile .
+  18 notepad.exe .\Dockerfile
+  21 docker build -t my-aspnet-1 .
 
 
+PS C:\Users\jimxu7\projects> history
+
+  Id CommandLine
+  -- -----------
+   4 docker tag 730c9decb1e8 535105329651.dkr.ecr.us-east-1.amazonaws.com/it-ops/windows-web-sites/windows-web-sites:latest
+   6 $(aws ecr get-login --no-include-email --region us-east-1)
+   7 docker push 535105329651.dkr.ecr.us-east-1.amazonaws.com/it-ops/windows-web-sites/windows-web-sites:latest
+  16 docker push 535105329651.dkr.ecr.us-east-1.amazonaws.com/it-ops/windows-web-sites/windows-web-sites
+  32 okta-aws default sts get-caller-identity
+  33  $(aws ecr get-login --no-include-email --region us-east-1)
+  34 docker login -u AWS -p TOKEN
+  75 docker image pull mcr.microsoft.com/windows/servercore:1809
+  76 docker images
+  77 docker image pull mcr.microsoft.com/windows/nanoserver:1809
+  78 docker images
+  79 docker image pull microsoft/dotnet:2.1-sdk-nanoserver-1809
+  80 docker images
+  81 docker image pull microsoft/dotnet:2.1-aspnetcore-runtime-nanoserver-1809
+  83 aws s3 cp s3://cxoworkspace/www.systane-learning.no-v1.zip .
+ 102 docker container run -d -p 8080:80 sixeyed/whoami-dotnet:nanoserver-1809
+ 105 iwr -useb http://localhost:8080
+ 106 curl http://localhost:8080
+ 107 get-command curl
+ 108 get-command iwr
+ 126 docker run -d -p 8080:80 --name my-running-site aspnet-2019-site
+ 132 docker stop 3714a32a8efe
+ 133 docker container prune
+ 138 docker rmi 0173fc7e90e6
+ 139 docker container prune
+ 140 docker rmi 0173fc7e90e6
+ 153 docker tag b652ce008c35 535105329651.dkr.ecr.us-east-1.amazonaws.com/it-ops/windows-web-sites/systane-learning-no
+ 154 docker push  535105329651.dkr.ecr.us-east-1.amazonaws.com/it-ops/windows-web-sites/systane-learning-no
+ 156 docker images
+
+
+(9) 535105329651.dkr.ecr.us-east-1.amazonaws.com/systane-co-ee-v1
+http://ecs-win-aspnet-1657555363.us-east-1.elb.amazonaws.com/
+# Dockerfile
+FROM mcr.microsoft.com/dotnet/framework/aspnet
+ARG site_root=.
+ADD ${site_root} /inetpub/wwwroot
