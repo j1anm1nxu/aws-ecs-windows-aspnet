@@ -1,9 +1,6 @@
 aws cloudformation create-stack --stack-name apc-cfn-ecs-win-2019-aspnet --template-body file://apc-cfn-ecs-win-2019-aspnet.yaml --parameters file://aspnetwincontainer-params.json --capabilities CAPABILITY_IAM --disable-rollback
 
-
-
-
-
+aws cloudformation wait stack-create-complete --stack-name apc-cfn-ecs-win-2019-aspnet
 
 
 # NOTE:
@@ -126,7 +123,10 @@ PS C:\Users\jimxu7\projects> history
 
 
 (9) 535105329651.dkr.ecr.us-east-1.amazonaws.com/systane-co-ee-v1
-http://ecs-win-aspnet-1657555363.us-east-1.elb.amazonaws.com/
+ecs-win-aspnet-301323341.us-east-1.elb.amazonaws.com
+https://hub.docker.com/_/microsoft-dotnet-framework-aspnet
+# 4.7.2 for Windows Server 2019
+docker pull mcr.microsoft.com/dotnet/framework/aspnet:4.7.2
 # Dockerfile
 FROM mcr.microsoft.com/dotnet/framework/aspnet
 ARG site_root=.

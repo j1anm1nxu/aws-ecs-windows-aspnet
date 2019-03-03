@@ -37,7 +37,7 @@
     },
     {
         "ParameterKey": "InstanceType",
-        "ParameterValue": "t2.medium"
+        "ParameterValue": "t2.small"
     },
     {
         "ParameterKey": "VpcId",
