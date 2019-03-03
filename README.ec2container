@@ -1,7 +1,8 @@
 aws cloudformation create-stack --stack-name apc-cfn-ecs-win-2019-aspnet --template-body file://apc-cfn-ecs-win-2019-aspnet.yaml --parameters file://aspnetwincontainer-params.json --capabilities CAPABILITY_IAM --disable-rollback
 
-r!=fOy%P.yd*pm9sTBIBgsa&CLGB?sPf
-
+{
+    "StackId": "arn:aws:cloudformation:us-east-1:535105329651:stack/apc-cfn-ecs-win-2019-aspnet/b12f6940-3d16-11e9-98cc-0eb85d5eff94"
+}
 
 
 
@@ -20,12 +21,10 @@ Windows_Server-2019-English-Full-ContainersLatest-2019.02.13 (ami-0aeaed2faa7569
 
 (4) Subnet shall be public
 
-
-
+(5) Templates
 Template 'aspnetwincontainer.json' is original.
 Template 'aspnetwincontainer.yaml' is working.
 'aspnetwincontainer-paras.json' is stack parameter file.
-
 
 [
     {
@@ -62,7 +61,15 @@ Template 'aspnetwincontainer.yaml' is working.
     }
 ]
 
-
 aws cloudformation create-stack --stack-name ecs-win-aspnet --template-body file://aspnetwincontainer.yaml --parameters file://aspnetwincontainer-params.json --capabilities CAPABILITY_IAM --disable-rollback
+
+
+(6) We need SSL certs from ACM for ELBs
+
+
+
+
+
+
 
 

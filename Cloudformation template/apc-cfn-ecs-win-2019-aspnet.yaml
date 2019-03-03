@@ -197,6 +197,9 @@ Resources:
       Port: 80
       Protocol: HTTP
       UnhealthyThresholdCount: 2
+      TargetGroupAttributes:
+        - Key: stickiness.enabled
+          Value: true
       VpcId: !Ref 'VpcId'
   ECSAutoScalingGroup:
     Type: AWS::AutoScaling::AutoScalingGroup
